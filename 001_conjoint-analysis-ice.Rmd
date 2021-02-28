@@ -1,0 +1,118 @@
+---
+title: "Conjoint Analysis"
+author: "Muhammad Apriandito"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Install Packages
+
+```{r}
+# Install Packages
+install.packages("conjoint")
+install.packages("tidyverse")
+```
+
+## Load Packages
+
+Mengaktifkan package yang sudah di install
+
+```{r}
+# Load Packages
+library(conjoint)
+library(tidyverse)
+library(fpc)
+```
+
+## Load Data
+
+Dataset yang akan digunakan merupakan dataset bawaan dari package `conjoint`
+
+```{r}
+# Import Data
+data(ice)
+```
+
+Ada 3 data yang terimport
+
+```{r}
+# Lihat masing-masing data
+iprof
+ilevn
+ipref
+```
+
+## Conjoint Analysis
+
+### Importance
+
+```{r}
+# Importance
+importance <- caImportance(y = ipref, x = iprof)
+importance
+```
+
+```{r}
+# Buat dalam bentuk visualisasi
+barplot(importance, 
+        names.arg = c("flavour", "price", "container", "topping"),
+        ylab = "Average Importance", xlab = "Attributes")
+```
+
+### Utilities
+
+```{r}
+# Utilities
+utilities <- caUtilities(y=ipref, x=iprof, z=ilevn)
+```
+
+```{r}
+# Visualisasi Flavour
+barplot(utilities[2:4], ylim = c(-1,1),
+        names.arg = c("chocolate", "vanilla", "strawberry"),
+        ylab = "utility", xlab = "flavour")
+```
+
+```{r}
+# Visualisasi Price
+barplot(utilities[5:7], ylim = c(-1, 1),
+        names.arg = c("	$1.50", "$2.00", "$2.50"),
+        ylab = "utility", xlab = "price")
+```
+
+```{r}
+# Visualisasi Container
+barplot(utilities[8:9], ylim = c(-1, 1),
+        names.arg = c("cone", "cup"),
+        ylab = "utility", xlab = "container")
+```
+
+```{r}
+# Visualisasi Topping
+barplot(utilities[10:11], ylim = c(-1, 1),
+        names.arg = c("yes", "no"),
+        ylab = "utility", xlab = "topping")
+```
+
+### Complete Result
+
+```{r}
+# Sums up the results
+Conjoint(y=ipref, x=iprof, z=ilevn)
+```
+
+### Segmentation
+
+```{r}
+# Membuat Cluster
+segments <- caSegmentation(y=ipref, x=iprof,c = 2)
+segments
+```
+
+```{r}
+# Visualisasi Cluster
+plotcluster(segments$util,segments$sclu)
+```
